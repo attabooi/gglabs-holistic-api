@@ -1,10 +1,43 @@
 const express = require('express');
+const multer = require("multer");
 const app = express();
 const uuidAPIKey = require('uuid-apikey');
+const path = require("path");
+
 
 const server = app.listen(3000, () => {
     console.log('start server : localhost:3000');
 });
+
+
+const storage = multer.diskStorage({
+    destination:'./upload/image',
+    filename: (req, file, cb)=>{
+        return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+    }
+})
+
+const upload = multer({
+    storage: storage
+})
+
+app.use('/profile', express.static('upload/image'));
+
+app.post("/upload", upload.single('profile'), (req, res)=>{
+    
+    res.json({
+        success:1,
+        profile_url: `http://localhost:3000/profile/${req.file.filename}`
+    })
+    
+})
+
+
+
+
+
+
+
 
 
 const key = {
