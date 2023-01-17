@@ -5,6 +5,11 @@ const uuidAPIKey = require('uuid-apikey');
 const path = require("path");
 
 
+console.log("hello world")
+var fs = require('fs')
+console.log(results)
+console.log("hello world")
+
 const server = app.listen(3000, () => {
     console.log('start server : localhost:3000');
 });
@@ -75,4 +80,16 @@ app.get('/api/users/:apikey/:type', async (req, res) => {
     console.log(type);
     res.send('ok');
 });
+
+
+
+
+
+app.get('/downloadFile/', (req, res) => {
+    var files = fs.createReadStream(jsonString);
+    res.writeHead(200, {'Content-disposition': 'attachment; filename=demo.pdf'});
+    files.pipe(res)
+  })
+ 
+
 
