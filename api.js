@@ -1,46 +1,43 @@
+const mysql = require('mysql2');
 const express = require('express');
-const multer = require("multer");
 const app = express();
 const uuidAPIKey = require('uuid-apikey');
-const path = require("path");
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'rkqmfldpf1',
+    database: 'holistic'
+  });
+connection.connect();
 
 
-console.log("hello world")
-var fs = require('fs')
-console.log(results)
-console.log("hello world")
+app.post('/save-results', (req, res) => {
+  
+  const jsonString = JSON.stringify(req.body);
+  const sql = 'INSERT INTO holistic_output(json_data) VALUES (?)';
+  connection.query(sql, [jsonString], (err, results) => {
+    if (err) throw err;
+    console.log('Data inserted successfully');
+    res.json({ message: 'Data saved successfully' });
+  });
+});
 
-const server = app.listen(3000, () => {
-    console.log('start server : localhost:3000');
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
 });
 
 
-const storage = multer.diskStorage({
-    destination:'./upload/image',
-    filename: (req, file, cb)=>{
-        return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
-    }
-})
 
-const upload = multer({
-    storage: storage
-})
+app.get("/", (req, res) => {
 
-app.use('/profile', express.static('upload/image'));
-
-app.post("/upload", upload.single('profile'), (req, res)=>{
-    
-    res.json({
-        success:1,
-        profile_url: `http://localhost:3000/profile/${req.file.filename}`
-    })
-    
-})
+  res.sendFile(__dirname + "/holistic.html");
+});
 
 
-
-
-
+app.get("/model.js", (req, res) => {
+  res.sendFile(__dirname + "/model.js");
+});
 
 
 
@@ -49,6 +46,7 @@ const key = {
     apiKey: 'J3VMYCC-N9K47ZG-PXR7HA0-AH94H32',
     uuid: '90f74f31-aa66-43fe-b770-78a85452488c'
 }
+
 
 app.get('/api/users/:apikey/:type', async (req, res) => {
     let {
@@ -80,16 +78,4 @@ app.get('/api/users/:apikey/:type', async (req, res) => {
     console.log(type);
     res.send('ok');
 });
-
-
-
-
-
-app.get('/downloadFile/', (req, res) => {
-    var files = fs.createReadStream(jsonString);
-    res.writeHead(200, {'Content-disposition': 'attachment; filename=demo.pdf'});
-    files.pipe(res)
-  })
- 
-
 

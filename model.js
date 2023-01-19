@@ -1,4 +1,3 @@
-// import FileSaver from 'file-saver';
 const video = document.getElementsByClassName('input_video')[0];
 const output = document.getElementsByClassName('output')[0];
 const controlsElement4 = document.getElementsByClassName('control')[0];
@@ -130,7 +129,20 @@ function onResultsHolistic(results) {
   a.href = URL.createObjectURL(blob);
   a.download = 'example.json';
   a.click();
-  
+
+
+  fetch('/save-results', {
+    method: 'POST',
+    body: JSON.stringify(results),
+    headers: { 'Content-Type': 'application/json' },
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
 
 };
 
@@ -180,27 +192,3 @@ new ControlPanel(controlsElement4, {
       video.classList.toggle('selfie', options.selfieMode);
       holistic.setOptions(options);
     });
-
-
-    
-
-    // function downloadJSON() {
-    //     const a = document.createElement("a");
-    //     const file = new Blob([jsonString], {type: 'application/json'});
-    //     a.href = URL.createObjectURL(file);
-    //     a.download = 'example.json';
-    //     a.click();
-    //   }
-    //   const downloadButton = document.getElementById("download-button");
-
-    // console.log(jsonString)
-    // console.log("asdfasdf")
-    // console.log(file)
-    // downloadButton.addEventListener("click", async () => {
-    //     const response = await fetch("http://127.0.0.1:5500/holistic.html");
-    //     const jsonBlob = await response.blob();
-    //     const a = document.createElement("a");
-    //     a.href = URL.createObjectURL(jsonBlob);
-    //     a.download = 'example.json';
-    //     a.click();
-    // });
