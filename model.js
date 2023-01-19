@@ -1,9 +1,10 @@
+const fs = require('fs');
 const video = document.getElementsByClassName('input_video')[0];
 const output = document.getElementsByClassName('output')[0];
 const controlsElement4 = document.getElementsByClassName('control')[0];
 const canvasCtx4 = output.getContext('2d');
 
-
+const videoFilePath = 'output/file.mp4'
 
 const fpsControl = new FPS();
 const spinner = document.querySelector('.loading');
